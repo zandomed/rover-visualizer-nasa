@@ -1,0 +1,5 @@
+export enum Rover {
+  CURIOSITY = 'CURIOSITY',
+  OPPORTUNITY = 'OPPORTUNITY',
+  SPIRIT = 'SPIRIT',
+}
