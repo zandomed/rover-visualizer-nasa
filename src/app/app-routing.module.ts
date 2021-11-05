@@ -12,11 +12,15 @@ const routes: Routes = [
       import('./gallery/gallery.module').then((m) => m.GalleryModule),
   },
   {
-    path: '**',
+    path: 'not-found',
     loadChildren: () =>
       import('./page-not-found/page-not-found.module').then(
         (m) => m.PageNotFoundModule
       ),
+  },
+  {
+    path: '**',
+    redirectTo: 'not-found',
   },
 ];
 

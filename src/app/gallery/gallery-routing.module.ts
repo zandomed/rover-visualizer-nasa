@@ -7,6 +7,10 @@ const routes: Routes = [
     path: ':rover',
     component: GalleryComponent,
   },
+  {
+    path: '**',
+    redirectTo: '/not-found',
+  },
 ];
 
 @NgModule({
