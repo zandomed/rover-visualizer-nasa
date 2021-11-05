@@ -15,4 +15,8 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  public getRouteForGallery(roverName: string) {
+    return ['/gallery', roverName.toLowerCase()];
+  }
 }

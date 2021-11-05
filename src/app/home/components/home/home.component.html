@@ -7,7 +7,12 @@
   <section class="Home_section initial">...</section>
   <section class="Home_section rovers">
     <ng-container *ngFor="let rover of rovers">
-      <div class="Rover_card">{{ rover }}</div>
+      <div class="Rover_card">
+        <span>
+          {{ rover }}
+        </span>
+        <a [routerLink]="getRouteForGallery(rover)">View Photos</a>
+      </div>
     </ng-container>
   </section>
 </div>
