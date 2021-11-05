@@ -3,6 +3,7 @@ import { Rover } from './rover';
 
 export const MappingCamerasRovers = {
   [Rover.CURIOSITY]: [
+    CameraRover.ALL,
     CameraRover.FHAZ,
     CameraRover.RHAZ,
     CameraRover.MAST,
@@ -12,6 +13,7 @@ export const MappingCamerasRovers = {
     CameraRover.NAVCAM,
   ],
   [Rover.OPPORTUNITY]: [
+    CameraRover.ALL,
     CameraRover.FHAZ,
     CameraRover.RHAZ,
     CameraRover.NAVCAM,
@@ -19,6 +21,7 @@ export const MappingCamerasRovers = {
     CameraRover.MINITES,
   ],
   [Rover.SPIRIT]: [
+    CameraRover.ALL,
     CameraRover.FHAZ,
     CameraRover.RHAZ,
     CameraRover.NAVCAM,
