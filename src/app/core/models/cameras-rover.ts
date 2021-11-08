@@ -1,5 +1,5 @@
 export enum CameraRover {
-  ALL = 'all',
+  // ALL = 'all',
   FHAZ = 'fhaz',
   RHAZ = 'rhaz',
   MAST = 'mast',

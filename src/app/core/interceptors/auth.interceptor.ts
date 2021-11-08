@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private addAPIKey(request: HttpRequest<any>) {
     const token = environment.NASA_API_KEY;
-    console.log(token, 'token');
+    // console.log(token, 'token');
     if (token) {
       request = request.clone({
         setParams: {

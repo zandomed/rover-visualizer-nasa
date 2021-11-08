@@ -1,17 +1,20 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { GalleryRoutingModule } from './gallery-routing.module';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MaterialModule } from '../material/material.module';
 import { GalleryComponent } from './components/gallery/gallery.component';
-
+import { GalleryRoutingModule } from './gallery-routing.module';
 
 @NgModule({
-  declarations: [
-    GalleryComponent
-  ],
+  declarations: [GalleryComponent],
   imports: [
     CommonModule,
-    GalleryRoutingModule
-  ]
+    GalleryRoutingModule,
+    InfiniteScrollModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
-export class GalleryModule { }
+export class GalleryModule {}

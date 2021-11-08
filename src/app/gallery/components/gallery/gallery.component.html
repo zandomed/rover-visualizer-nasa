@@ -1,6 +1,98 @@
-<p>gallery works!</p>
-<div>
-  <ng-container *ngFor="let photo of photos">
-    <img [src]="photo.img_src" [alt]="photo.id" />
-  </ng-container>
+<div class="Gallery">
+  <aside class="Gallery__sidebar">
+    <div>
+      <form
+        class="form"
+        [formGroup]="formFilterSeach"
+        (ngSubmit)="onHandlerSubmitSearchFilter($event)"
+      >
+        <!-- Rovers -->
+        <mat-form-field>
+          <mat-label>Rover</mat-label>
+          <mat-select formControlName="rover">
+            <mat-option [value]="rover" *ngFor="let rover of rovers">{{
+              rover
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- Cameras -->
+        <mat-form-field>
+          <mat-label>Camera</mat-label>
+          <mat-select formControlName="camera">
+            <mat-option [value]="''">All</mat-option>
+            <mat-option [value]="camera" *ngFor="let camera of cameras">{{
+              camera
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Type Filter -->
+        <div>
+          <mat-radio-group
+            aria-labelledby="example-radio-group-label"
+            class="example-radio-group"
+            formControlName="typeFilter"
+          >
+            <!-- <mat-label>Type filter</mat-label> -->
+
+            <mat-radio-button class="example-radio-button" [value]="'EARTH'">
+              EARTH
+            </mat-radio-button>
+            <mat-radio-button class="example-radio-button" [value]="'SOL'">
+              SOL
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <!-- Earth Date -->
+        <mat-form-field
+          *ngIf="formFilterSeach.controls['typeFilter'].value === 'EARTH'"
+        >
+          <mat-label>Earth Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="earthDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <!-- Sol Date -->
+        <mat-form-field
+          *ngIf="formFilterSeach.controls['typeFilter'].value === 'SOL'"
+        >
+          <mat-label>Sol Date</mat-label>
+          <input matInput formControlName="sol" type="number" />
+        </mat-form-field>
+        <div>
+          <button mat-flat-button type="button" (click)="onHandlerResetForm()">
+            Reset
+          </button>
+          <button mat-flat-button type="submit">Search</button>
+        </div>
+      </form>
+    </div>
+  </aside>
+  <div
+    class="Gallery__content"
+    infinite-scroll
+    [scrollWindow]="false"
+    [infiniteScrollDistance]="distance"
+    [infiniteScrollThrottle]="throttle"
+    (scrolled)="onHandlerInfiniteScroll()"
+  >
+    <ng-container *ngIf="photos.length > 0; else notFound">
+      <ng-container *ngFor="let photo of photos">
+        <img [src]="photo.img_src" [alt]="photo.id" />
+      </ng-container>
+    </ng-container>
+  </div>
 </div>
+
+<ng-template #notFound>
+  <div>
+    <span>No Hay imagenes del rover</span>
+  </div>
+</ng-template>
