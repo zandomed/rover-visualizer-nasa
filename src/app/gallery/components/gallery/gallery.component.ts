@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatSelectionList,
@@ -6,6 +12,7 @@ import {
 } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
+import { Subscription } from 'rxjs';
 import { CameraRover } from 'src/app/core/models/cameras-rover';
 import { FilterSaved } from 'src/app/core/models/filter-saved';
 import { MappingCamerasRovers } from 'src/app/core/models/mapping-cameras-rovers';
@@ -24,7 +31,7 @@ import { capitalize } from 'src/app/utils/capitalize';
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss'],
 })
-export class GalleryComponent implements OnInit {
+export class GalleryComponent implements OnInit, OnDestroy {
   public photos: Photo[] = [];
   public throttle: number = 500;
   public distance: number = 2;
@@ -35,19 +42,19 @@ export class GalleryComponent implements OnInit {
   public isLoadingContent: boolean = true;
   public isLoadCompletePhotos: boolean = false;
   public formFilterSeach: FormGroup;
+  private subscriptions: Subscription = new Subscription();
 
   @ViewChild('contentScrollGallery')
   private contentScrollGalleryRef: ElementRef<HTMLElement> | undefined;
   @ViewChild(MatSelectionList)
   private filterSavedListRef: MatSelectionList | undefined;
 
-  // private roverInParams: Rover = Rover.CURIOSITY;
   constructor(
     private readonly roverService: RoverService,
     private readonly activateRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly formBuilder: FormBuilder,
-    private readonly storageService: StorageMap // private readonly router: Router
+    private readonly storageService: StorageMap
   ) {
     this.cameras = Object.values(CameraRover);
     this.rovers = Object.values(Rover).map(capitalize);
@@ -60,7 +67,7 @@ export class GalleryComponent implements OnInit {
       camera: this.formBuilder.control(''),
     });
 
-    this.formFilterSeach.valueChanges.subscribe(() => {
+    this.subscriptionAdd = this.formFilterSeach.valueChanges.subscribe(() => {
       if (
         (this.filterSavedListRef?.selectedOptions?.selected?.length ?? 0) > 0
       ) {
@@ -68,12 +75,15 @@ export class GalleryComponent implements OnInit {
       }
     });
 
-    this.formFilterSeach.get('rover')?.valueChanges.subscribe((rover) => {
-      this.cameras = MappingCamerasRovers[Rover[rover.toUpperCase() as Rover]];
-      this.formFilterSeach.get('camera')?.setValue('');
-    });
+    this.subscriptionAdd = this.formFilterSeach
+      .get('rover')
+      ?.valueChanges.subscribe((rover) => {
+        this.cameras =
+          MappingCamerasRovers[Rover[rover.toUpperCase() as Rover]];
+        this.formFilterSeach.get('camera')?.setValue('');
+      });
 
-    this.formFilterSeach
+    this.subscriptionAdd = this.formFilterSeach
       .get('typeFilter')
       ?.valueChanges.subscribe((typeFilter) => {
         const earthDateControl = this.formFilterSeach.get('earthDate');
@@ -95,6 +105,9 @@ export class GalleryComponent implements OnInit {
     this.storageService.watch(StoragKey.FILTERS).subscribe((value) => {
       this.filtersSaved = (value as FilterSaved[]) ?? [];
     });
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -120,6 +133,15 @@ export class GalleryComponent implements OnInit {
         this.photos = res.photos;
         this.formFilterSeach.get('rover')?.setValue(capitalize(rover));
       });
+  }
+
+  /**
+   * @access
+   */
+  public set subscriptionAdd(subscribe: Subscription | undefined) {
+    if (subscribe === undefined) return;
+
+    this.subscriptions.add(subscribe);
   }
 
   public onHandlerResetForm() {
