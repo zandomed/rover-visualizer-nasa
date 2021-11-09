@@ -95,7 +95,8 @@
             Save filters
           </button>
           <button
-            mat-flat-button
+            mat-raised-button
+            color="primary"
             type="submit"
             [disabled]="formFilterSeach.invalid"
           >
@@ -184,6 +185,6 @@
 
 <ng-template #loadingContent>
   <div class="Gallery__content loading">
-    <mat-spinner></mat-spinner>
+    <mat-spinner [strokeWidth]="3"></mat-spinner>
   </div>
 </ng-template>
