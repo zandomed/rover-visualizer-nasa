@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { Subscription } from 'rxjs';
 import { CameraRover } from 'src/app/core/models/cameras-rover';
+import { Filter } from 'src/app/core/models/filter';
 import { FilterSaved } from 'src/app/core/models/filter-saved';
 import { MappingCamerasRovers } from 'src/app/core/models/mapping-cameras-rovers';
 import { OptionsFilters } from 'src/app/core/models/options-filters';
@@ -199,11 +200,15 @@ export class GalleryComponent implements OnInit, OnDestroy {
     if (typeFilter === 'EARTH') {
       this.roverService
         .getPhotosByEarthDate(rover, earthDate, params)
-        .subscribe((res) => this.assignResponsePhotos(res, rover));
+        .subscribe((res) =>
+          this.assignResponsePhotos(res, this.formFilterSeach.value)
+        );
     } else {
       this.roverService
         .getPhotosByMartialSol(rover, sol, params)
-        .subscribe((res) => this.assignResponsePhotos(res, rover));
+        .subscribe((res) =>
+          this.assignResponsePhotos(res, this.formFilterSeach.value)
+        );
     }
   }
 
@@ -308,12 +313,18 @@ export class GalleryComponent implements OnInit, OnDestroy {
    * @description Function that is assigned in the subscribe of the "onHandlerSubmitSearchFilter" function.
    * @author Miguel Mendoza
    */
-  private assignResponsePhotos(res: ResponseRoverPhotos, rover: string) {
+  private assignResponsePhotos(
+    res: ResponseRoverPhotos,
+    { rover, ...filter }: Filter
+  ) {
     if (res.photos.length < 25 && res.photos.length > 1) {
       this.isLoadCompletePhotos = true;
     }
     this.photos = res.photos;
-    this.router.navigate(['/gallery', rover]);
+    this.router.navigate(['/gallery', rover], {
+      replaceUrl: true,
+      // queryParams: filter,
+    });
   }
 
   /**
