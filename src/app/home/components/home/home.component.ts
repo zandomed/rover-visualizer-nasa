@@ -11,11 +11,22 @@ export class HomeComponent implements OnInit {
   public rovers: string[] = [];
 
   constructor() {
+    // Variable initialization.
     this.rovers = Object.values(Rover).map(capitalize);
   }
 
+  /**
+   * @implements
+   */
   ngOnInit(): void {}
 
+  /**
+   * @name getRouteForGallery
+   * @param {string} roverName Name of Rover
+   * @description Sets the route to return to RouterLink in HTML.
+   * @author Miguel Mendoza
+   * @return {string[]}
+   */
   public getRouteForGallery(roverName: string) {
     return ['/gallery', roverName.toLowerCase()];
   }

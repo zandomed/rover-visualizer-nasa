@@ -56,9 +56,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
     private readonly formBuilder: FormBuilder,
     private readonly storageService: StorageMap
   ) {
+    // Variable initialization.
     this.cameras = Object.values(CameraRover);
     this.rovers = Object.values(Rover).map(capitalize);
 
+    // Definition of form.
     this.formFilterSeach = this.formBuilder.group({
       rover: this.formBuilder.control(''),
       typeFilter: this.formBuilder.control('EARTH'),
@@ -67,6 +69,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
       camera: this.formBuilder.control(''),
     });
 
+    // Observable of global changes of the form.
     this.subscriptionAdd = this.formFilterSeach.valueChanges.subscribe(() => {
       if (
         (this.filterSavedListRef?.selectedOptions?.selected?.length ?? 0) > 0
@@ -74,7 +77,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
         this.filterSavedListRef?.deselectAll();
       }
     });
-
+    // Observable of changes of the property "rover".
     this.subscriptionAdd = this.formFilterSeach
       .get('rover')
       ?.valueChanges.subscribe((rover) => {
@@ -83,6 +86,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
         this.formFilterSeach.get('camera')?.setValue('');
       });
 
+    // Observable changes to the "typeFilter" property.
     this.subscriptionAdd = this.formFilterSeach
       .get('typeFilter')
       ?.valueChanges.subscribe((typeFilter) => {
@@ -102,15 +106,24 @@ export class GalleryComponent implements OnInit, OnDestroy {
         }
       });
 
+    // Observable storage changes
     this.storageService.watch(StoragKey.FILTERS).subscribe((value) => {
       this.filtersSaved = (value as FilterSaved[]) ?? [];
     });
   }
+
+  /**
+   * @implements
+   */
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
+  /**
+   * @implements
+   */
   ngOnInit(): void {
+    // Get URL parameters
     const params = this.activateRoute.snapshot.params;
     const roverParam = new String(params['rover']);
     const rover = Rover[roverParam.toUpperCase() as Rover];
@@ -129,7 +142,6 @@ export class GalleryComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.isLoadingContent = false;
-        // console.log(res);
         this.photos = res.photos;
         this.formFilterSeach.get('rover')?.setValue(capitalize(rover));
       });
@@ -137,6 +149,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   /**
    * @access
+   * @author Miguel Mendoza
    */
   public set subscriptionAdd(subscribe: Subscription | undefined) {
     if (subscribe === undefined) return;
@@ -144,6 +157,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.subscriptions.add(subscribe);
   }
 
+  /**
+   * @name onHandlerResetForm
+   * @description Resets the form status
+   * @author Miguel Mendoza
+   */
   public onHandlerResetForm() {
     const { rover } = this.formFilterSeach.value;
     this.cameras = MappingCamerasRovers[Rover[rover.toUpperCase() as Rover]];
@@ -156,6 +174,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @name onHandlerSubmitSearchFilter
+   * @description Request information from the API with new search parameters
+   * @author Miguel Mendoza
+   */
   public onHandlerSubmitSearchFilter() {
     // console.log(evt);
     this.isLoadCompletePhotos = false;
@@ -184,6 +207,14 @@ export class GalleryComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @name onHandlerInfiniteScroll
+   * @description Request the information from the API with the data
+   * already existing in the filter panel but with a new data page.
+   *
+   * This function is triggered when scrolling to generate an infinite scroll.
+   * @author Miguel Mendoza
+   */
   public onHandlerInfiniteScroll(): void {
     // console.log('Load more Images');
     this.isLoadCompletePhotos = false;
@@ -210,6 +241,13 @@ export class GalleryComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @name onHandlerSelectionFilterSaved
+   * @param {MatSelectionListChange} evt
+   * @description Listen to the selection changes in the list of saved
+   * filters to assign it to the form.
+   * @author Miguel Mendoza
+   */
   public onHandlerSelectionFilterSaved(evt: MatSelectionListChange) {
     const values = evt.options[0].value as FilterSaved;
 
@@ -217,6 +255,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.onHandlerSubmitSearchFilter();
   }
 
+  /**
+   * @name onHandlerSaveFilter
+   * @description Saves the current state of the filters in the LocalStorage.
+   * @author Miguel Mendoza
+   */
   public onHandlerSaveFilter() {
     const filter = this.formFilterSeach.value;
     const filterSaved: FilterSaved = {
@@ -229,6 +272,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
       .subscribe(() => {});
   }
 
+  /**
+   * @name onHandlerTopScroll
+   * @description Moves the scroll with the content to the top.
+   * @author Miguel Mendoza
+   */
   public onHandlerTopScroll() {
     this.contentScrollGalleryRef?.nativeElement.scrollTo({
       top: 0,
@@ -236,6 +284,12 @@ export class GalleryComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @name getErrorMessage
+   * @param {string} controlName
+   * @description Gets the error messages based on a control.
+   * @author Miguel Mendoza
+   */
   public getErrorMessage(controlName: string) {
     const control = this.formFilterSeach.get(controlName);
 
@@ -246,6 +300,14 @@ export class GalleryComponent implements OnInit, OnDestroy {
     return '';
   }
 
+  /**
+   * @name assignResponsePhotos
+   * @private
+   * @param {ResponseRoverPhotos} res Response API
+   * @param {string} rover Name of Rover
+   * @description Function that is assigned in the subscribe of the "onHandlerSubmitSearchFilter" function.
+   * @author Miguel Mendoza
+   */
   private assignResponsePhotos(res: ResponseRoverPhotos, rover: string) {
     if (res.photos.length < 25 && res.photos.length > 1) {
       this.isLoadCompletePhotos = true;
@@ -254,6 +316,14 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.router.navigate(['/gallery', rover]);
   }
 
+  /**
+   * @name loadMoreResponsePhoto
+   * @private
+   * @param {ResponseRoverPhotos} res Response API
+   * @param {string} rover Name of Rover
+   * @description  Function that is assigned in the subscribe of the "onHandlerInfiniteScroll" function.
+   * @author Miguel Mendoza
+   */
   private loadMoreResponsePhoto(res: ResponseRoverPhotos) {
     if (res.photos.length === 0) {
       this.isLoadCompletePhotos = true;
