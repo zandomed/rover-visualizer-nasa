@@ -1,98 +1,189 @@
 <div class="Gallery">
   <aside class="Gallery__sidebar">
-    <div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-subtitle>Filters</mat-card-subtitle>
+      </mat-card-header>
       <form
         class="form"
         [formGroup]="formFilterSeach"
-        (ngSubmit)="onHandlerSubmitSearchFilter($event)"
+        (ngSubmit)="onHandlerSubmitSearchFilter()"
       >
-        <!-- Rovers -->
-        <mat-form-field>
-          <mat-label>Rover</mat-label>
-          <mat-select formControlName="rover">
-            <mat-option [value]="rover" *ngFor="let rover of rovers">{{
-              rover
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <!-- Cameras -->
-        <mat-form-field>
-          <mat-label>Camera</mat-label>
-          <mat-select formControlName="camera">
-            <mat-option [value]="''">All</mat-option>
-            <mat-option [value]="camera" *ngFor="let camera of cameras">{{
-              camera
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <mat-card-content>
+          <!-- Rovers -->
+          <mat-form-field>
+            <mat-label>Rover</mat-label>
+            <mat-select formControlName="rover">
+              <mat-option [value]="rover" *ngFor="let rover of rovers">{{
+                rover
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- Cameras -->
+          <mat-form-field>
+            <mat-label>Camera</mat-label>
+            <mat-select formControlName="camera">
+              <mat-option [value]="''">All</mat-option>
+              <mat-option [value]="camera" *ngFor="let camera of cameras">{{
+                camera.toUpperCase()
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <!-- Type Filter -->
-        <div>
-          <mat-radio-group
-            aria-labelledby="example-radio-group-label"
-            class="example-radio-group"
-            formControlName="typeFilter"
+          <!-- Type Filter -->
+          <div class="radio-buttons">
+            <mat-label>Type filter</mat-label>
+            <mat-radio-group
+              aria-labelledby="example-radio-group-label"
+              formControlName="typeFilter"
+            >
+              <mat-radio-button class="example-radio-button" [value]="'EARTH'">
+                EARTH
+              </mat-radio-button>
+              <mat-radio-button class="example-radio-button" [value]="'SOL'">
+                SOL
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <!-- Earth Date -->
+          <mat-form-field
+            *ngIf="formFilterSeach.controls['typeFilter'].value === 'EARTH'"
           >
-            <!-- <mat-label>Type filter</mat-label> -->
-
-            <mat-radio-button class="example-radio-button" [value]="'EARTH'">
-              EARTH
-            </mat-radio-button>
-            <mat-radio-button class="example-radio-button" [value]="'SOL'">
-              SOL
-            </mat-radio-button>
-          </mat-radio-group>
-        </div>
-        <!-- Earth Date -->
-        <mat-form-field
-          *ngIf="formFilterSeach.controls['typeFilter'].value === 'EARTH'"
-        >
-          <mat-label>Earth Date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="picker"
-            formControlName="earthDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <!-- Sol Date -->
-        <mat-form-field
-          *ngIf="formFilterSeach.controls['typeFilter'].value === 'SOL'"
-        >
-          <mat-label>Sol Date</mat-label>
-          <input matInput formControlName="sol" type="number" />
-        </mat-form-field>
-        <div>
+            <mat-label>Earth Date</mat-label>
+            <input
+              name="earthDate"
+              matInput
+              [matDatepicker]="picker"
+              formControlName="earthDate"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="formFilterSeach.controls['earthDate'].invalid">{{
+              getErrorMessage("earthDate")
+            }}</mat-error>
+          </mat-form-field>
+          <!-- Sol Date -->
+          <mat-form-field
+            *ngIf="formFilterSeach.controls['typeFilter'].value === 'SOL'"
+          >
+            <mat-label>Sol Date</mat-label>
+            <input
+              matInput
+              formControlName="sol"
+              type="number"
+              autocomplete="off"
+              name="sol"
+            />
+            <mat-error *ngIf="formFilterSeach.controls['sol'].invalid">{{
+              getErrorMessage("sol")
+            }}</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
           <button mat-flat-button type="button" (click)="onHandlerResetForm()">
             Reset
           </button>
-          <button mat-flat-button type="submit">Search</button>
-        </div>
+          <button
+            mat-flat-button
+            type="button"
+            (click)="onHandlerSaveFilter()"
+            [disabled]="formFilterSeach.invalid"
+          >
+            Save filters
+          </button>
+          <button
+            mat-flat-button
+            type="submit"
+            [disabled]="formFilterSeach.invalid"
+          >
+            Search
+          </button>
+        </mat-card-actions>
       </form>
-    </div>
+    </mat-card>
+
+    <mat-card style="margin-top: 20px; flex: 2; overflow-x: auto">
+      <!-- <div *ngFor="let filter of filtersSaved">
+        <span
+          >{{ filter.name }} - {{ filter.createdAt | date: "shortDate" }}</span
+        >
+      </div> -->
+      <mat-selection-list
+        #filterSavedList
+        [multiple]="false"
+        (selectionChange)="onHandlerSelectionFilterSaved($event)"
+      >
+        <div mat-subheader>
+          Filters Saved
+          {{ filtersSaved.length > 0 ? "(" + filtersSaved.length + ")" : "" }}
+        </div>
+        <mat-list-option
+          *ngFor="let filter of filtersSaved.reverse()"
+          [value]="filter"
+        >
+          <!-- <mat-icon mat-list-icon>filter</mat-icon> -->
+          <div mat-line>{{ filter.name }}</div>
+          <div mat-line>{{ filter.createdAt | date: "short" }}</div>
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-card>
   </aside>
-  <div
-    class="Gallery__content"
-    infinite-scroll
-    [scrollWindow]="false"
-    [infiniteScrollDistance]="distance"
-    [infiniteScrollThrottle]="throttle"
-    (scrolled)="onHandlerInfiniteScroll()"
-  >
+  <ng-container *ngIf="!isLoadingContent; else loadingContent">
     <ng-container *ngIf="photos.length > 0; else notFound">
-      <ng-container *ngFor="let photo of photos">
-        <img [src]="photo.img_src" [alt]="photo.id" />
-      </ng-container>
+      <div
+        #contentScrollGallery
+        class="Gallery__content"
+        infinite-scroll
+        [scrollWindow]="false"
+        [infiniteScrollDistance]="distance"
+        [infiniteScrollThrottle]="throttle"
+        (scrolled)="onHandlerInfiniteScroll()"
+      >
+        <ng-container *ngFor="let photo of photos">
+          <div class="Gallery__content-element photo">
+            <mat-card>
+              <img [src]="photo.img_src" [alt]="photo.id" mat-card-image />
+              <mat-card-content>
+                <span>{{ photo.rover.name }}</span
+                ><br />
+                <span>{{ photo.earth_date }}</span
+                ><br />
+                <span>{{ photo.sol }}</span
+                ><br />
+                <span
+                  >{{ photo.camera.full_name }} [
+                  {{ photo.camera.name }} ]</span
+                ><br />
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isLoadCompletePhotos">
+          <div class="Gallery__content-element complete-result">
+            <span>He is up to date with his visit to the red planet!</span>
+          </div>
+        </ng-container>
+        <div class="floating-button" *ngIf="page > 1">
+          <button mat-fab (click)="onHandlerTopScroll()">
+            <mat-icon>keyboard_arrow_up</mat-icon>
+          </button>
+        </div>
+      </div>
     </ng-container>
-  </div>
+  </ng-container>
 </div>
 
 <ng-template #notFound>
-  <div>
-    <span>No Hay imagenes del rover</span>
+  <div class="Gallery__content not-found">
+    <span>No results available for this search</span>
+  </div>
+</ng-template>
+
+<ng-template #loadingContent>
+  <div class="Gallery__content loading">
+    <mat-spinner></mat-spinner>
   </div>
 </ng-template>

@@ -2,14 +2,46 @@
   display: flex;
   overflow: hidden;
   height: 100vh;
+  // padding: 10px;
+  background-color: #ececec;
 
   &__sidebar {
     width: 30%;
+    padding: 10px;
+    height: calc(100vh - 20px);
+    display: flex;
+    flex-direction: column;
 
     .form {
       padding: 20px;
       display: flex;
       flex-direction: column;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      .radio-buttons {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        mat-label {
+          letter-spacing: normal;
+          margin-bottom: 5px;
+          text-align: left;
+          font: inherit;
+          font-weight: 500;
+          font-size: 11px;
+          pointer-events: none;
+          white-space: nowrap;
+          color: rgba(0, 0, 0, 0.54);
+        }
+        mat-radio-group {
+          > :first-child {
+            margin-right: 10px;
+          }
+        }
+      }
     }
   }
 
@@ -18,15 +50,48 @@
     flex: 1;
 
     width: auto;
-
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+    flex-direction: column;
     /* Make it scrollable */
     overflow: auto;
 
-    img {
-      flex: 1;
+    &.not-found {
+      align-items: center;
+      justify-content: center;
+    }
 
-      width: 500px;
-      height: auto;
+    &.loading {
+      align-items: center;
+      justify-content: center;
+    }
+
+    .photo {
+      // width: 100%;
+      height: fit-content;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      // height: 400px;
+      min-height: auto;
+      max-width: 600px;
+      // img {
+      //   flex: 1;
+      //   object-fit: contain;
+      //   width: 100%;
+      //   max-height: 100%;
+      //   height: auto;
+      // }
+    }
+    .complete-result {
+      padding: 50px 35px;
+    }
+
+    .floating-button {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
     }
   }
 }
