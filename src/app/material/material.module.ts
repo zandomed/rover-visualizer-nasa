@@ -1,3 +1,4 @@
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
@@ -11,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   exports: [
@@ -25,6 +27,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatDateFnsModule,
     MatListModule,
     MatIconModule,
+    ClipboardModule,
+    MatSnackBarModule,
   ],
   imports: [CommonModule],
 })

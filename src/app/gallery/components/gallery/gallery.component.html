@@ -41,7 +41,7 @@
                 EARTH
               </mat-radio-button>
               <mat-radio-button class="example-radio-button" [value]="'SOL'">
-                SOL
+                MARTIAN SOL
               </mat-radio-button>
             </mat-radio-group>
           </div>
@@ -69,7 +69,7 @@
           <mat-form-field
             *ngIf="formFilterSeach.controls['typeFilter'].value === 'SOL'"
           >
-            <mat-label>Sol Date</mat-label>
+            <mat-label>Martian Sol</mat-label>
             <input
               matInput
               formControlName="sol"
@@ -145,21 +145,7 @@
       >
         <ng-container *ngFor="let photo of photos">
           <div class="Gallery__content-element photo">
-            <mat-card>
-              <img [src]="photo.img_src" [alt]="photo.id" mat-card-image />
-              <mat-card-content>
-                <span>{{ photo.rover.name }}</span
-                ><br />
-                <span>{{ photo.earth_date }}</span
-                ><br />
-                <span>{{ photo.sol }}</span
-                ><br />
-                <span
-                  >{{ photo.camera.full_name }} [
-                  {{ photo.camera.name }} ]</span
-                ><br />
-              </mat-card-content>
-            </mat-card>
+            <app-card-photo [photo]="photo"></app-card-photo>
           </div>
         </ng-container>
         <ng-container *ngIf="isLoadCompletePhotos">

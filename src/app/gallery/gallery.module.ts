@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { MaterialModule } from '../material/material.module';
+import { SharedModule } from '../shared/shared.module';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { GalleryRoutingModule } from './gallery-routing.module';
 
@@ -12,9 +12,10 @@ import { GalleryRoutingModule } from './gallery-routing.module';
     CommonModule,
     GalleryRoutingModule,
     InfiniteScrollModule,
-    MaterialModule,
+    // MaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule,
   ],
 })
 export class GalleryModule {}

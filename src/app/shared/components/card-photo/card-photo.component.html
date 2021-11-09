@@ -1,0 +1,21 @@
+<mat-card class="Card-photo">
+  <img [src]="photo?.img_src" [alt]="photo?.id" mat-card-image />
+  <mat-card-content class="Card-photo__content">
+    <span
+      >Earth date: <b>{{ photo?.earth_date }}</b></span
+    >
+    <span
+      >Martian Sol:
+      <b>
+        {{ photo?.sol }}
+      </b>
+    </span>
+    <span
+      >Camera:
+      <b> {{ photo?.camera?.full_name }} [ {{ photo?.camera?.name }} ] </b>
+    </span>
+    <mat-card-actions>
+      <button mat-button (click)="onHandlerSharePhoto()">Share</button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>

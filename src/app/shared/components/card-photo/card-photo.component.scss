@@ -1,0 +1,16 @@
+.Card-photo {
+  &__content {
+    display: flex;
+    flex-direction: column;
+
+    span {
+      color: #919191;
+      font-size: 12px;
+
+      > b {
+        font-size: 14px;
+        color: rgb(41, 41, 41);
+      }
+    }
+  }
+}
